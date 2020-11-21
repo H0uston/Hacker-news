@@ -5,6 +5,7 @@ import Preloader from "../../common/Preloader/Preloader";
 function Comments(props) {
     let [rootComments, setRootComments] = useState([]);
     let [isFetching, setIsFetching] = useState(false);
+    let [stateInterval, setStateInterval] = useState(null);
 
     useEffect(() => {
         let loadComments = async () => {
@@ -14,16 +15,14 @@ function Comments(props) {
         };
         loadComments();
 
+        setStateInterval(setInterval(() => props.updateComments(props.pageId), props.updateCommentsTime));
+
+        return () => {
+            clearInterval(stateInterval);
+        }
     }, []);
 
-    /*
-    let showNestedComments = async (commentId) => {
-        let [commentItem] = props.comments.filter(c => c.id === commentId);
-        await props.getNestedComments(commentItem.kids, commentId);
-    };*/
-
     useEffect(() => {
-        debugger;
         setRootComments(props.rootComments.map(c => <Comment  isParent={true}
                                                                         openedComments={props.openedComments}
                                                                         nestedComments={props.nestedComments}

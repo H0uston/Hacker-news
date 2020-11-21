@@ -9,3 +9,7 @@ export const getOpenedCommentsSelector = (state) => {
 export const getNestedCommentsSelector = (state) => {
     return state.commentsInfo.nestedComments;
 };
+
+export const getUpdateCommentsTimeSelector = (state) => {
+    return state.commentsInfo.updateCommentsTime;
+};
