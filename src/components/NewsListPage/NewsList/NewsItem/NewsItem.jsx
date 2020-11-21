@@ -16,7 +16,7 @@ const NewsItem = (props) => {
                     Score: {props.score}
                 </div>
                 <div>
-                    Date: {props.time}
+                    Date: {new Date(props.date * 1000).toLocaleDateString("en-US")}
                 </div>
                 <div>
                     KIDS: {props.kids}

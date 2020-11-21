@@ -18,11 +18,9 @@ const NewsPage = (props) => {
             {!props.newsInfo
                 ?   <Preloader/>
                 :   <>
-                        <NewsPageInfo title={props.newsInfo.title}
-                                      text={props.newsInfo.text}
-                                      date={props.newsInfo.time}
-                                      author={props.newsInfo.by}/>
-                        <CommentsContainer commentIds={props.newsInfo.kids } />
+                        <NewsPageInfo {...props.newsInfo}/>
+                        <CommentsContainer  commentIds={props.newsInfo.kids}
+                                            pageId={newsId}/>
                     </>
             }
         </article>

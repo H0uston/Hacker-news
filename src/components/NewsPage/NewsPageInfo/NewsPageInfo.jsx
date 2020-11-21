@@ -10,10 +10,10 @@ const NewsPageInfo = (props) => {
                 text={props.text}
             </div>
             <div>
-                date={props.date}
+                date={new Date(props.time * 1000).toLocaleDateString("en-US")}
             </div>
             <div>
-                author={props.author}
+                author={props.by}
             </div>
         </div>
     )

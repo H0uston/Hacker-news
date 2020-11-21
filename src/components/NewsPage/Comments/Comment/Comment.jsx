@@ -7,7 +7,6 @@ const Comment = (props) => {
     let haveKids = !!props.kids;
 
     let showOrHideNestedComments = async () => {
-        debugger;
         if (!props.openedComments[props.id] && !props.nestedComments[props.id]) {  // if comment is hidden and nested com are not loaded
             props.openComment(props.id);
             setIsFetching(true);
@@ -38,8 +37,7 @@ const Comment = (props) => {
                 <div className={styles.author}>
                     Комментарий от {props.by}:
                 </div>
-                <div className={styles.text}>
-                    {props.text}
+                <div className={styles.text} dangerouslySetInnerHTML={{ __html: props.text }}>
                 </div>
             </div>
             <div>
