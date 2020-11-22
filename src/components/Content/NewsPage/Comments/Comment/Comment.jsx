@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styles from "./Comment.module.css";
-import Preloader from "../../../common/Preloader/Preloader";
+import Preloader from "../../../../common/Preloader/Preloader";
 
 const Comment = (props) => {
     let [isFetching, setIsFetching] = useState(false);

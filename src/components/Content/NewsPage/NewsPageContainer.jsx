@@ -2,8 +2,8 @@ import {compose} from "redux";
 import {connect} from "react-redux";
 import NewsPage from "./NewsPage";
 import {withRouter} from "react-router-dom";
-import {getNewsInfoIsFetchingSelector, getNewsDataSelector} from "../../selectors/newsPageSelectors";
-import {getNewsInfo} from "../../state/news/newsReducer";
+import {getNewsInfoIsFetchingSelector, getNewsDataSelector} from "../../../selectors/newsPageSelectors";
+import {getNewsInfo} from "../../../state/news/newsReducer";
 
 let mapStateToProps = (state) => ({
     isFetching: getNewsInfoIsFetchingSelector(state),

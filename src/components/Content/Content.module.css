@@ -1,0 +1,7 @@
+.mainContent {
+    flex: 1;
+    width: 900px;
+    margin: 0 auto;
+    background-color: #F9F9F9;
+    padding-bottom: 5px;
+}

@@ -159,7 +159,7 @@ export const updateComments = (pageId) => async (dispatch, getState) => {
     // Get root comment ids of news
     let response = await getNewsItem(pageId);
     // Get root comments
-    if (response.kids) {
+    if (response && response.kids) {
         let commentPromises = await getCommentsPromises(response.kids);
         let newRootComments = await Promise.all(commentPromises);
         dispatch(setUpdatedComments(newRootComments));

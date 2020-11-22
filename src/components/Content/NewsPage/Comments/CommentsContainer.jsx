@@ -8,13 +8,13 @@ import {
     openComment,
     closeComment,
     getNestedComments, updateComments,
-} from "../../../state/comments/commentsReducer";
+} from "../../../../state/comments/commentsReducer";
 import {
     getNestedCommentsSelector,
     getOpenedCommentsSelector,
     getRootCommentsSelector,
     getUpdateCommentsTimeSelector
-} from "../../../selectors/commentsSelectors";
+} from "../../../../selectors/commentsSelectors";
 
 const CommentsContainer = (props) => {
     return <Comments {...props}/>

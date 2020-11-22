@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Comment from "./Comment/Comment";
-import Preloader from "../../common/Preloader/Preloader";
+import Preloader from "../../../common/Preloader/Preloader";
 
 function Comments(props) {
     let [rootComments, setRootComments] = useState([]);

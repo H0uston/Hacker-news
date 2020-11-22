@@ -1,7 +1,11 @@
 import {compose} from "redux";
 import {connect} from "react-redux";
-import {getLastNewsItemsSelector, getLastNewsMaxCountSelector, getUpdateNewsTimeSelector} from "../../../selectors/newsListPageSelectors";
-import NewsList from "./NewsList";
+import {
+    getLastNewsItemsSelector,
+    getLastNewsMaxCountSelector,
+    getUpdateNewsTimeSelector
+} from "../../../selectors/newsListPageSelectors";
+import NewsListPage from "./NewsListPage";
 import {getLastNews} from "../../../state/newsList/newsListReducer";
 
 let mapStateToProps = (state) => ({
@@ -11,4 +15,4 @@ let mapStateToProps = (state) => ({
 });
 
 
-export default compose(connect(mapStateToProps, {getLastNews}))(NewsList);
+export default compose(connect(mapStateToProps, {getLastNews}))(NewsListPage);
