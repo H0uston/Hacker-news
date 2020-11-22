@@ -33,9 +33,20 @@ function Comments(props) {
                                                                         {...c}/>));
     }, [props.rootComments, props.openedComments, props.nestedComments]);
 
+    let updateComments = () => {
+        clearInterval(stateInterval);
+        props.updateComments(props.pageId);
+        setStateInterval(setInterval(() => props.updateComments(props.pageId), props.updateCommentsTime));
+    };
+
     return (
         <div>
-            Комментарии ({props.commentIds ? props.commentIds.length : "0"})
+            Комментарии ({props.rootComments ? props.rootComments.length : "0"})
+            <span>
+                <button onClick={updateComments}>
+                    Refresh comments
+                </button>
+            </span>
             {isFetching ? <Preloader/> : rootComments}
         </div>
     )

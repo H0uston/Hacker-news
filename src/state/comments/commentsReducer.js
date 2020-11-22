@@ -10,7 +10,7 @@ import {newsAPI} from "../../API/newsAPI";
 
 let initialState = {
     rootComments: [],
-    openedComments: null,
+    openedComments: {},
     nestedComments: {},
     updateCommentsTime: 60000,
 };
@@ -22,7 +22,7 @@ const commentsReducer = (state=initialState, action) => {
     switch (action.type) {
         case (SET_COMMENTS):
             stateCopy.rootComments = action.comments.filter(c => !c.deleted); // filter deleted comments
-            let openedComments = {};
+            let openedComments = {...stateCopy.openedComments};
             for (let comment of stateCopy.rootComments) {
                 openedComments[comment.id] = false;
             }
@@ -37,11 +37,11 @@ const commentsReducer = (state=initialState, action) => {
                 stateCopy.openedComments[comment.id] = false;
             }
             break;
-        case (SET_COMMENT_IS_OPENED): // TODO make a function
+        case (SET_COMMENT_IS_OPENED):
             stateCopy.openedComments = {...stateCopy.openedComments};
             stateCopy.openedComments[action.commentId] = true;
             break;
-        case (SET_COMMENT_IS_CLOSED): // TODO make a function
+        case (SET_COMMENT_IS_CLOSED):
             stateCopy.openedComments = {...stateCopy.openedComments};
             stateCopy.openedComments[action.commentId] = false;
             break;
@@ -70,7 +70,6 @@ const commentsReducer = (state=initialState, action) => {
             }
             break;
         case (SET_UPDATED_NESTED_COMMENTS):
-            debugger;
             // copy and getting ids in one for
             let oldNestedIds = [];
             let oldNestedComments = {};
@@ -140,8 +139,8 @@ const getCommentsPromises = (commentIds) => {
 
 export const getListOfComments = (commentIds) => async (dispatch) => {
     let commentPromises = await getCommentsPromises(commentIds);
-    let values = await Promise.all(commentPromises);
-    dispatch(setComments(values));
+    let comments = await Promise.all(commentPromises);
+    dispatch(setComments(comments));
 };
 
 /*
@@ -175,30 +174,22 @@ export const closeComment = (commentId) => (dispatch) => {
     dispatch(setCommentIsClosed(commentId));
 };
 
-const getNewsItem = async (newsId) => { // TODO
-    let response = await newsAPI.getNewsItemData(newsId);
-    if (response.status === 200) {
-        return response.json();
-    }
-    throw Error("Error");
-};
-
-export const updateComments = (pageId) => async (dispatch, getState) => { // TODO mb divide it?
+export const updateComments = (pageId) => async (dispatch, getState) => {
     let currentNestedComments = getState().commentsInfo.nestedComments;
 
     // Get root comment ids of news
-    let response = await getNewsItem(pageId);
+    let response = await newsAPI.getNewsItemData(pageId);
     // Get root comments
     if (response.kids !== 0) {
         let commentPromises = await getCommentsPromises(response.kids);
-        let values = await Promise.all(commentPromises); // TODO values?
-        dispatch(setUpdatedComments(values));
+        let newRootComments = await Promise.all(commentPromises);
+        dispatch(setUpdatedComments(newRootComments));
 
         // Get nested comments
         for (let parentId of Object.keys(currentNestedComments)) {
             let ids = currentNestedComments[parentId].map(c => c.id);
             let newNestedCommentsPromise = await getCommentsPromises(ids);
-            let newNestedComments = await Promise.all(newNestedCommentsPromise); // TODO values?
+            let newNestedComments = await Promise.all(newNestedCommentsPromise);
             dispatch(setUpdatedNestedComments(newNestedComments, parentId));
         }
     }
