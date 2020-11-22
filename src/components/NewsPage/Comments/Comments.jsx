@@ -13,7 +13,9 @@ function Comments(props) {
             await props.getListOfComments(props.commentIds);
             setIsFetching(false);
         };
-        loadComments();
+        if (props.commentIds) {
+            loadComments();
+        }
 
         setStateInterval(setInterval(() => props.updateComments(props.pageId), props.updateCommentsTime));
 
@@ -23,17 +25,17 @@ function Comments(props) {
     }, []);
 
     useEffect(() => {
-        setRootComments(props.rootComments.map(c => <Comment  isParent={true}
-                                                                        openedComments={props.openedComments}
-                                                                        nestedComments={props.nestedComments}
-                                                                        key={c.id}
-                                                                        openComment={props.openComment}
-                                                                        closeComment={props.closeComment}
-                                                                        getNestedComments={props.getNestedComments}
-                                                                        {...c}/>));
+        setRootComments(props.rootComments.map(c => <Comment isParent={true}
+                                                             openedComments={props.openedComments}
+                                                             nestedComments={props.nestedComments}
+                                                             key={c.id}
+                                                             openComment={props.openComment}
+                                                             closeComment={props.closeComment}
+                                                             getNestedComments={props.getNestedComments}
+                                                             {...c}/>));
     }, [props.rootComments, props.openedComments, props.nestedComments]);
 
-    let updateComments = () => {
+    let forceUpdateComments = () => {
         clearInterval(stateInterval);
         props.updateComments(props.pageId);
         setStateInterval(setInterval(() => props.updateComments(props.pageId), props.updateCommentsTime));
@@ -41,13 +43,17 @@ function Comments(props) {
 
     return (
         <div>
-            Комментарии ({props.rootComments ? props.rootComments.length : "0"})
-            <span>
-                <button onClick={updateComments}>
-                    Refresh comments
-                </button>
-            </span>
-            {isFetching ? <Preloader/> : rootComments}
+            {isFetching ? <Preloader/> :
+                <div>
+                    Комментарии ({props.rootComments ? props.rootComments.length : "0"})
+                    <span>
+                        <button onClick={forceUpdateComments}>
+                            Refresh comments
+                        </button>
+                    </span>
+                    {rootComments}
+                </div>
+            }
         </div>
     )
 }

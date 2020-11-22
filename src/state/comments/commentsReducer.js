@@ -6,7 +6,8 @@ import {
     setComments, setNestedComments, setUpdatedComments, setUpdatedNestedComments,
 } from "./commentsAction";
 import {commentsAPI} from "../../API/commentsAPI";
-import {newsAPI} from "../../API/newsAPI";
+import {getNewsItem} from "../news/newsReducer";
+
 
 let initialState = {
     rootComments: [],
@@ -120,12 +121,7 @@ const commentsReducer = (state=initialState, action) => {
 
 const getCommentItem = async (commentId) => { // TODO is repeat?
     let response = await commentsAPI.getCommentData(commentId);
-    if (response.status === 200) {
-        return response.json();
-    }
-    console.log("ERROR: ");
-    console.log(response);
-    throw Error("Error"); // TODO
+    return response.json();
 };
 
 const getCommentsPromises = (commentIds) => {
@@ -142,23 +138,6 @@ export const getListOfComments = (commentIds) => async (dispatch) => {
     let comments = await Promise.all(commentPromises);
     dispatch(setComments(comments));
 };
-
-/*
-const getNestedCommentsRecursive = async (nestedCommentIds) => {
-    let nestedCommentItems = [];
-    let commentPromises = await getCommentsPromises(nestedCommentIds);
-    let comments = await Promise.all(commentPromises);
-
-    for (let comment of comments) {
-        if (comment.kids) {
-            comment.nestedComments = await getNestedCommentsRecursive(comment.kids, comment.id);
-        }
-        nestedCommentItems.push(comment);
-    }
-    return nestedCommentItems;
-};
-
-*/
 
 export const getNestedComments = (nestedCommentIds, parentId) => async (dispatch) => {
     let commentPromises = await getCommentsPromises(nestedCommentIds);
@@ -178,9 +157,9 @@ export const updateComments = (pageId) => async (dispatch, getState) => {
     let currentNestedComments = getState().commentsInfo.nestedComments;
 
     // Get root comment ids of news
-    let response = await newsAPI.getNewsItemData(pageId);
+    let response = await getNewsItem(pageId);
     // Get root comments
-    if (response.kids !== 0) {
+    if (response.kids) {
         let commentPromises = await getCommentsPromises(response.kids);
         let newRootComments = await Promise.all(commentPromises);
         dispatch(setUpdatedComments(newRootComments));

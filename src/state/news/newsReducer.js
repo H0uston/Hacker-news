@@ -19,12 +19,12 @@ const newsReducer = (state=initialState, action) => {
     return stateCopy;
 };
 
-const getNewsItem = async (newsId) => { // TODO
+export const getNewsItem = async (newsId) => { // TODO
     let response = await newsAPI.getNewsItemData(newsId);
     if (response.status === 200) {
         return response.json();
     }
-    throw Error("Error");
+    throw Error("Error"); // TODO
 };
 
 export const getNewsInfo = (newsId) => async (dispatch) => {
