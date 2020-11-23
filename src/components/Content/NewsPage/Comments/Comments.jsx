@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import Comment from "./Comment/Comment";
 import Preloader from "../../../common/Preloader/Preloader";
+import styles from "./Comments.module.css";
 
 function Comments(props) {
     let [rootComments, setRootComments] = useState([]);
@@ -44,14 +45,16 @@ function Comments(props) {
     return (
         <div>
             {isFetching ? <Preloader/> :
-                <div>
-                    Комментарии ({props.rootComments ? props.rootComments.length : "0"})
-                    <span>
-                        <button onClick={forceUpdateComments}>
-                            Refresh comments
-                        </button>
-                    </span>
-                    {rootComments}
+                <div className={styles.commentsContent}>
+                    <div className={styles.miniTitle}>
+                        Comments ({props.rootComments ? props.rootComments.length : "0"})
+                    </div>
+                    <button className={styles.refreshButton} onClick={forceUpdateComments}>
+                        Refresh comments
+                    </button>
+                    <div className={styles.comments}>
+                        {rootComments}
+                    </div>
                 </div>
             }
         </div>

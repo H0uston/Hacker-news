@@ -62,8 +62,8 @@ const commentsReducer = (state=initialState, action) => {
                 }
             }
 
+            stateCopy.rootComments = newComments;
             if (newIds.length !== 0) { // if comments are updated
-                stateCopy.rootComments = newComments;
                 stateCopy.openedComments = {...stateCopy.openedComments};
                 for (let newId of newIds) {
                     stateCopy.openedComments[newId] = false;
@@ -104,14 +104,12 @@ const commentsReducer = (state=initialState, action) => {
                     }
                 }
             }
-
             if (newNestedIds.length !== 0) {
                 stateCopy.openedComments = {...stateCopy.openedComments};
                 for (let newNestedId of newNestedIds) {
                     stateCopy.openedComments[newNestedId] = false;
                 }
             }
-
             break;
     }
 

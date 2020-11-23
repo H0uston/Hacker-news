@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
 import Preloader from "../../common/Preloader/Preloader";
 import NewsPageInfo from "./NewsPageInfo/NewsPageInfo";
 import CommentsContainer from "./Comments/CommentsContainer";
+import styles from "./NewsPage.module.css";
 
 const NewsPage = (props) => {
     let [newsId, setNewsId] = useState(undefined);
@@ -18,7 +19,7 @@ const NewsPage = (props) => {
     }, []);
 
     return (
-        <article>
+        <article className={styles.NewsPage}>
             {!props.newsInfo || isFetching
                 ?   <Preloader/>
                 :   <>

@@ -1,6 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styles from "./Comment.module.css";
 import Preloader from "../../../../common/Preloader/Preloader";
+import CommentInfo from "./CommentInfo/CommentInfo";
 
 const Comment = (props) => {
     let [isFetching, setIsFetching] = useState(false);
@@ -29,22 +30,17 @@ const Comment = (props) => {
                                                                                       closeComment={props.closeComment}
                                                                                       getNestedComments={props.getNestedComments}
                                                                                       {...c}/>);
-
     return (
-        <div className={styles.commentContent + " " + (props.isNested ? styles.nestedCommentContent : styles.parentCommentContent)}>
-            <div onClick={() => haveKids ? showOrHideNestedComments() : ""}>
-                <div className={styles.author}>
-                    Комментарий от {props.by}:
+        <div className={styles.commentContainer + " " + (props.isNested ? styles.nestedCommentContent : styles.parentCommentContent)}>
+            <div className={styles.commentContent} onClick={() => haveKids ? showOrHideNestedComments() : ""}>
+                <CommentInfo author={props.by} time={props.time} text={props.text}/>
+                <div className={styles.text} dangerouslySetInnerHTML={{__html: props.text}}>
                 </div>
-                {props.isError
-                ? <div className={styles.error}>
-                        {props.text}
-                  </div>
-                : <div className={styles.text} dangerouslySetInnerHTML={{ __html: props.text }}>
-                  </div>}
             </div>
             <div>
-                Количество вложенных: {haveKids ? props.kids.length : 0}
+                <div className={styles.countOfReply}>
+                    (Count of reply: {haveKids ? props.kids.length : 0})
+                </div>
                 {props.openedComments[props.id] && (isFetching ? <Preloader/> : nestedElements)}
             </div>
         </div>
