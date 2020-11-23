@@ -1,20 +1,20 @@
 import React from "react";
 import styles from "./NewsPageInfo.module.css";
-import {NavLink} from "react-router-dom";
+import LinkButton from "../../../common/Buttons/LinkButton";
 
-const NewsPageInfo = (props) => {
+const NewsPageInfo = ({title, by, url, time}) => {
     return (
         <section className={styles.newsPageInfoContent}>
             <div className={styles.title}>
-                {props.title}
+                {title}
             </div>
-            <div className={styles.restData}>
-                (<a className={styles.url} href={props.url}>{props.url}</a>)
-                by {props.by} at {new Date(props.time * 1000).toLocaleString()}
+            <div className={styles.info}>
+                (<a className={styles.url} href={url}>{url}</a>)
+                by {by} at {new Date(time * 1000).toLocaleString()}
             </div>
-            <NavLink className={styles.backButton} to={"/"}>
-                Back to news list
-            </NavLink>
+            <div className={styles.backButton}>
+                <LinkButton text={"Back to news list"} to={"/"} />
+            </div>
         </section>
     )
 };

@@ -1,0 +1,27 @@
+.title {
+    display: flex;
+    flex-direction: row;
+
+    max-height: 54px;
+
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.miniTitle {
+    grid-area: title;
+
+    align-self: center;
+
+    font-size: 18px;
+}
+
+.smallPreloader {
+    display: flex;
+    align-items: center;
+}
+
+.smallPreloader img{
+    height: 40px;
+    width: 40px;
+}

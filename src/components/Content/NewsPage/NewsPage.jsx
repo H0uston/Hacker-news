@@ -11,7 +11,7 @@ const NewsPage = (props) => {
     useEffect(() => {
         let loadData = async () => {
             setIsFetching(true);
-            let queryId = props.match.params.newsId;
+            let queryId = props.match.params.newsId;  //getting pageId from url
             setNewsId(queryId);
             await props.getNewsInfo(queryId);
             setIsFetching(false);

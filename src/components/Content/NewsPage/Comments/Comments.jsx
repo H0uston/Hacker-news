@@ -2,10 +2,12 @@ import React, {useEffect, useState} from "react";
 import Comment from "./Comment/Comment";
 import Preloader from "../../../common/Preloader/Preloader";
 import styles from "./Comments.module.css";
+import CommentsTitle from "./CommentsTitle/CommentsTitle";
 
 function Comments(props) {
-    let [rootComments, setRootComments] = useState([]);
+    let [stateRootCommentElements, setStateRootCommentElements] = useState([]);
     let [isFetching, setIsFetching] = useState(false);
+    let [isUpdating, setIsUpdating] = useState(false);
     let [stateInterval, setStateInterval] = useState(null);
 
     useEffect(() => {
@@ -14,11 +16,16 @@ function Comments(props) {
             await props.getListOfComments(props.commentIds);
             setIsFetching(false);
         };
-        if (props.commentIds) {
+
+        if (props.commentIds) {  // Have page comments?
             loadComments();
         }
 
-        setStateInterval(setInterval(() => props.updateComments(props.pageId), props.updateCommentsTime));
+        setStateInterval(setInterval(async () => {
+            setIsUpdating(true);
+            await props.updateComments(props.pageId);
+            setIsUpdating(false);
+        }, props.updateCommentsTime));
 
         return () => {
             clearInterval(stateInterval);
@@ -26,7 +33,7 @@ function Comments(props) {
     }, []);
 
     useEffect(() => {
-        setRootComments(props.rootComments.map(c => <Comment isParent={true}
+        setStateRootCommentElements(props.rootComments.map(c => <Comment isParent={true}
                                                              openedComments={props.openedComments}
                                                              nestedComments={props.nestedComments}
                                                              key={c.id}
@@ -36,28 +43,27 @@ function Comments(props) {
                                                              {...c}/>));
     }, [props.rootComments, props.openedComments, props.nestedComments]);
 
-    let forceUpdateComments = () => {
+    let forceUpdateComments = async () => {
         clearInterval(stateInterval);
-        props.updateComments(props.pageId);
+        setIsUpdating(true);
+        await props.updateComments(props.pageId);
+        setIsUpdating(false);
         setStateInterval(setInterval(() => props.updateComments(props.pageId), props.updateCommentsTime));
     };
 
     return (
-        <div>
+        <section>
             {isFetching ? <Preloader/> :
                 <div className={styles.commentsContent}>
-                    <div className={styles.miniTitle}>
-                        Comments ({props.rootComments ? props.rootComments.length : "0"})
-                    </div>
-                    <button className={styles.refreshButton} onClick={forceUpdateComments}>
-                        Refresh comments
-                    </button>
+                    <CommentsTitle commentsCount={props.rootComments ? props.rootComments.length : "0"}
+                                   forceUpdateComments={forceUpdateComments}
+                                   isUpdating={isUpdating} />
                     <div className={styles.comments}>
-                        {rootComments}
+                        {stateRootCommentElements}
                     </div>
                 </div>
             }
-        </div>
+        </section>
     )
 }
 

@@ -23,25 +23,28 @@ const Comment = (props) => {
     };
 
     let nestedElements = (props.nestedComments[props.id] || []).map(c => <Comment isNested={true}
-                                                                                      nestedComments={props.nestedComments}
-                                                                                      openedComments={props.openedComments}
-                                                                                      key={c.id}
-                                                                                      openComment={props.openComment}
-                                                                                      closeComment={props.closeComment}
-                                                                                      getNestedComments={props.getNestedComments}
-                                                                                      {...c}/>);
+                                                                                  nestedComments={props.nestedComments}
+                                                                                  openedComments={props.openedComments}
+                                                                                  key={c.id}
+                                                                                  openComment={props.openComment}
+                                                                                  closeComment={props.closeComment}
+                                                                                  getNestedComments={props.getNestedComments}
+                                                                                  {...c}/>);
     return (
         <div className={styles.commentContainer}>
             <div onClick={() => haveKids ? showOrHideNestedComments() : ""}>
-                <CommentInfo author={props.by} time={props.time} text={props.text}/>
+                <CommentInfo author={props.by} time={props.time}/>
                 <div className={styles.text} dangerouslySetInnerHTML={{__html: props.text}}>
+
                 </div>
             </div>
             <div>
                 <div className={styles.countOfReply}>
                     (Count of reply: {haveKids ? props.kids.length : 0})
                 </div>
-                {props.openedComments[props.id] && (isFetching ? <Preloader/> : nestedElements)}
+                <div className={styles.nestedComments}>
+                    {props.openedComments[props.id] && (isFetching ? <Preloader/> : nestedElements)}
+                </div>
             </div>
         </div>
     )

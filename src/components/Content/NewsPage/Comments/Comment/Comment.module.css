@@ -1,7 +1,8 @@
 .commentContainer {
     margin: 10px;
-    border-left: 3px grey solid;
     padding-left: 10px;
+
+    border-left: 3px grey solid;
 }
 
 .author {
@@ -9,16 +10,23 @@
 }
 
 .text {
-    font-size: 14px;
     padding: 10px;
+
     overflow: hidden;
+
+    font-size: 14px;
 }
 
 .nestedCommentContent {
     margin-left: 10px;
+
     cursor: pointer;
 }
 
 .countOfReply {
     font-style: italic;
+}
+
+.nestedComments > div > img {
+    height: 50px !important;
 }
