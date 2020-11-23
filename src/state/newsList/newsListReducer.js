@@ -23,7 +23,7 @@ const newsListReducer = (state=initialState, action) => {
 };
 
 const getLastNewsIds = async () => {
-    let response = await newsAPI.getLastNewsIds();
+    let response = await newsAPI.fetchLastNewsIds();
 
     if (response.status === 200) {
         return response.json();
@@ -32,7 +32,7 @@ const getLastNewsIds = async () => {
 };
 
 const getNewsItem = async (newsId) => {
-    let response = await newsAPI.getNewsItemData(newsId);
+    let response = await newsAPI.fetchNewsItemData(newsId);
     if (response.status === 200) {
         return response.json();
     }

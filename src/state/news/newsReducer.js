@@ -20,7 +20,7 @@ const newsReducer = (state=initialState, action) => {
 };
 
 export const getNewsItem = async (newsId) => { // TODO
-    let response = await newsAPI.getNewsItemData(newsId);
+    let response = await newsAPI.fetchNewsItemData(newsId);
     if (response.status === 200) {
         return response.json();
     }

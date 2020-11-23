@@ -3,44 +3,44 @@ import Preloader from "../../common/Preloader/Preloader";
 import NewsItem from "./NewsItem/NewsItem";
 import Title from "./Title/Title";
 
-const NewsListPage =  (props) => {
-    let [newsItems, setNewsItems] = useState([]);
+const NewsListPage =  ({getLastNews, lastNewsMaxCount, updateNewsTime, newsItems}) => {
+    let [stateNewsItems, setStateNewsItems] = useState([]);
     let [stateInterval, setStateInterval] = useState(null);
     let [isFetching, setIsFetching] = useState(false);
 
     let refreshLastNews = async () => {
         setIsFetching(true);
-        await props.getLastNews(props.lastNewsMaxCount);
+        await getLastNews(lastNewsMaxCount);
         setIsFetching(false);
     };
 
     let forceRefreshLastNews = async () => {
         clearInterval(stateInterval);
         await refreshLastNews();
-        setStateInterval(setInterval(async () => await refreshLastNews(), props.updateNewsTime));
+        setStateInterval(setInterval(async () => await refreshLastNews(), updateNewsTime));
     };
 
     useEffect(() => {
-        props.getLastNews(props.lastNewsMaxCount);
-        setStateInterval(setInterval(async () => await refreshLastNews(), props.updateNewsTime));
+        getLastNews(lastNewsMaxCount);
+        setStateInterval(setInterval(async () => await refreshLastNews(), updateNewsTime));
         return () => {
             clearInterval(stateInterval);
         }
     }, []);
 
     useEffect(() => {
-        if (props.newsItems !== null) {
-            setNewsItems(props.newsItems.map((n, index) => <NewsItem index={index + 1} key={n.id} {...n}/>));
+        if (newsItems !== null) {
+            setStateNewsItems(newsItems.map((n, index) => <NewsItem index={index + 1} key={n.id} {...n}/>));
         }
-    }, [props.newsItems]);
+    }, [newsItems]);
 
     return (
         <article>
             <Title isFetching={isFetching} refreshPage={forceRefreshLastNews} />
-            {!props.newsItems
+            {!newsItems
                 ? <Preloader />
                 : <>
-                    {newsItems}
+                    {stateNewsItems}
                   </>
             }
         </article>

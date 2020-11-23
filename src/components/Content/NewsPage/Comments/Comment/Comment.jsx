@@ -31,8 +31,8 @@ const Comment = (props) => {
                                                                                       getNestedComments={props.getNestedComments}
                                                                                       {...c}/>);
     return (
-        <div className={styles.commentContainer + " " + (props.isNested ? styles.nestedCommentContent : styles.parentCommentContent)}>
-            <div className={styles.commentContent} onClick={() => haveKids ? showOrHideNestedComments() : ""}>
+        <div className={styles.commentContainer}>
+            <div onClick={() => haveKids ? showOrHideNestedComments() : ""}>
                 <CommentInfo author={props.by} time={props.time} text={props.text}/>
                 <div className={styles.text} dangerouslySetInnerHTML={{__html: props.text}}>
                 </div>

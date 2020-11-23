@@ -1,15 +1,15 @@
-import React from 'react';
+import React from "react";
 import {NavLink} from "react-router-dom";
 import styles from "./NewsItem.module.css";
 
-const NewsItem = (props) => {
+const NewsItem = ({id, index, title, by, score, time, kids}) => {
     return (
-        <NavLink to={`/news${props.id}`} className={styles.newsItem}>
+        <NavLink to={`/${id}`} className={styles.newsItem}>
             <div className={styles.title}>
-                {props.index + ". " + props.title}
+                {index + ". " + title}
             </div>
-            <div className={styles.commentData}>
-                by {props.by} with {props.score} points at {new Date(props.time * 1000).toLocaleString()} (comments: {props.kids ? props.kids.length : "0"})
+            <div className={styles.restData}>
+                by {by} with {score} points at {new Date(time * 1000).toLocaleString()} (comments: {kids ? kids.length : "0"})
             </div>
         </NavLink>
     )

@@ -10,7 +10,7 @@ const Content = (props) => {
         <main className={styles.mainContent}>
             <Switch>
                 <Route path={"/"} exact render={() => <NewsListPageContainer/>} />
-                <Route path={"/news:newsId"} render={() => <NewsPageContainer />} />
+                <Route path={"/:newsId"} render={() => <NewsPageContainer />} />
                 <Route render={() => <NoMatch />}/>
             </Switch>
         </main>

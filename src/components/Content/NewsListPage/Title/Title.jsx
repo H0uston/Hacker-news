@@ -2,24 +2,24 @@ import React from "react";
 import styles from "./Title.module.css"
 import Preloader from "../../../common/Preloader/Preloader";
 
-const Title =  (props) => {
+const Title =  ({isFetching, refreshPage}) => {
 
-    let refreshPage = () => {
-        if (!props.isFetching) {
-            props.refreshPage();
+    let clickHandler = () => {
+        if (!isFetching) {
+            refreshPage();
         }
     };
 
     return (
         <div className={styles.titleContent}>
-            <button className={styles.refreshButton} onClick={refreshPage}>
+            <button className={styles.refreshButton} onClick={clickHandler}>
                 Refresh the page
             </button>
             <div className={styles.title}>
                 Latest News
             </div>
             <div className={styles.smallPreloader}>
-                {props.isFetching && <Preloader/>}
+                {isFetching && <Preloader/>}
             </div>
         </div>
     );

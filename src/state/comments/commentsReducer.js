@@ -118,7 +118,7 @@ const commentsReducer = (state=initialState, action) => {
 
 
 const getCommentItem = async (commentId) => { // TODO is repeat?
-    let response = await commentsAPI.getCommentData(commentId);
+    let response = await commentsAPI.fetchCommentData(commentId);
     return response.json();
 };
 
@@ -161,11 +161,10 @@ export const updateComments = (pageId) => async (dispatch, getState) => {
         let commentPromises = await getCommentsPromises(response.kids);
         let newRootComments = await Promise.all(commentPromises);
         dispatch(setUpdatedComments(newRootComments));
-
         // Get nested comments
         for (let parentId of Object.keys(currentNestedComments)) {
-            let ids = currentNestedComments[parentId].map(c => c.id);
-            let newNestedCommentsPromise = await getCommentsPromises(ids);
+            let comment = await getCommentItem(parentId); // check if appears new nested comments
+            let newNestedCommentsPromise = await getCommentsPromises(comment.kids);
             let newNestedComments = await Promise.all(newNestedCommentsPromise);
             dispatch(setUpdatedNestedComments(newNestedComments, parentId));
         }

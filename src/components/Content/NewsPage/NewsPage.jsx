@@ -7,6 +7,7 @@ import styles from "./NewsPage.module.css";
 const NewsPage = (props) => {
     let [newsId, setNewsId] = useState(undefined);
     let [isFetching, setIsFetching] = useState(false);
+
     useEffect(() => {
         let loadData = async () => {
             setIsFetching(true);
