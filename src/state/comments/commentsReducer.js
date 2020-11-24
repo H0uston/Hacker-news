@@ -119,7 +119,7 @@ const commentsReducer = (state=initialState, action) => {
 
 const getCommentItem = async (commentId) => { // TODO is repeat?
     let response = await commentsAPI.fetchCommentData(commentId);
-    return response.json();
+    return await response.json();
 };
 
 const getCommentsPromises = (commentIds) => {

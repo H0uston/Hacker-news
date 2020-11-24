@@ -4,7 +4,7 @@ import styles from "./NewsItem.module.css";
 
 const NewsItem = ({id, index, title, by, score, time, kids}) => {
     return (
-        <NavLink to={`/${id}`} className={styles.newsItem}>
+        <NavLink to={`/news${id}`} className={styles.newsItem}>
             <div className={styles.title}>
                 {index + ". " + title}
             </div>

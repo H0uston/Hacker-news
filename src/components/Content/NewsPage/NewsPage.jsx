@@ -3,6 +3,7 @@ import Preloader from "../../common/Preloader/Preloader";
 import NewsPageInfo from "./NewsPageInfo/NewsPageInfo";
 import CommentsContainer from "./Comments/CommentsContainer";
 import styles from "./NewsPage.module.css";
+import {Redirect} from "react-router-dom";
 
 const NewsPage = (props) => {
     let [newsId, setNewsId] = useState(undefined);
@@ -12,6 +13,9 @@ const NewsPage = (props) => {
         let loadData = async () => {
             setIsFetching(true);
             let queryId = props.match.params.newsId;  //getting pageId from url
+            if (isNaN(parseInt(queryId))) {
+                return <Redirect to={"/pageNotFound"}/>
+            }
             setNewsId(queryId);
             await props.getNewsInfo(queryId);
             setIsFetching(false);

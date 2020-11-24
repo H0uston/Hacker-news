@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
+import styles from "./NoMatch.module.css";
 
 const NoMatch = (props) => {
     return (
-        <div>
-            Ошибка 404
+        <div className={styles.pageNotFound}>
+            Page not found
         </div>
     );
 };
