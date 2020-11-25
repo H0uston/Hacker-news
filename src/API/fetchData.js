@@ -1,5 +1,5 @@
 const fetchData = {
-    baseURL: "https://hacker-news.firebaseio.com/v0/",
+    baseURL: "http://localhost:8003/api",
 };
 
 export default fetchData;

@@ -1,11 +1,11 @@
 import fetchData from "./fetchData";
 
 export const newsAPI = {
-    fetchLastNewsIds: () => {
-        return fetch(fetchData.baseURL + 'newstories.json?print=pretty');
+    fetchLastNews: (count) => {
+        return fetch(fetchData.baseURL + `/lastnews?count=${count}`);
     },
-    fetchNewsItemData: (newsId) => {
-        return fetch(fetchData.baseURL + `item/${newsId}.json?print=pretty`);
+    fetchNews: (newsId) => {
+        return fetch(fetchData.baseURL + `/news/${newsId}`);
     }
 };
 
