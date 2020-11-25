@@ -43,11 +43,15 @@ const commentsReducer = (state=initialState, action) => {
             break;
         case (SET_COMMENT_IS_OPENED):
             stateCopy.openedComments = {...stateCopy.openedComments};
-            stateCopy.openedComments[action.commentId] = true;
+            if (stateCopy.openedComments.hasOwnProperty(action.commentId)) {
+                stateCopy.openedComments[action.commentId] = true;
+            }
             break;
         case (SET_COMMENT_IS_CLOSED):
             stateCopy.openedComments = {...stateCopy.openedComments};
-            stateCopy.openedComments[action.commentId] = false;
+            if (stateCopy.openedComments.hasOwnProperty(action.commentId)) {
+                stateCopy.openedComments[action.commentId] = false;
+            }
             break;
         case (SET_UPDATED_COMMENTS):
             let newComments = action.comments;
@@ -74,7 +78,6 @@ const commentsReducer = (state=initialState, action) => {
             }
             break;
         case (SET_UPDATED_NESTED_COMMENTS):
-            stateCopy.loadedCommentIds = [...stateCopy.loadedCommentIds, action.parentId];
             // copy and getting ids in one for
             let oldNestedIds = [];
             let oldNestedComments = {};
