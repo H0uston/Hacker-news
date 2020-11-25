@@ -5,7 +5,6 @@ import Title from "./Title/Title";
 
 const NewsListPage =  ({getLastNews, lastNewsMaxCount, updateNewsTime, newsItems}) => {
     let [stateNewsItems, setStateNewsItems] = useState([]);
-    let [stateInterval, setStateInterval] = useState(null);
     let [isFetching, setIsFetching] = useState(false);
 
     let refreshLastNews = async () => {
@@ -15,16 +14,14 @@ const NewsListPage =  ({getLastNews, lastNewsMaxCount, updateNewsTime, newsItems
     };
 
     let forceRefreshLastNews = async () => {
-        clearInterval(stateInterval);
         await refreshLastNews();
-        setStateInterval(setInterval(async () => await refreshLastNews(), updateNewsTime));
     };
 
     useEffect(() => {
         getLastNews(lastNewsMaxCount);
-        setStateInterval(setInterval(async () => await refreshLastNews(), updateNewsTime));
+        let interval = setInterval(async () => await refreshLastNews(), updateNewsTime);
         return () => {
-            clearInterval(stateInterval);
+            clearInterval(interval);
         }
     }, []);
 

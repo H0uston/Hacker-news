@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Title.module.css"
 import Preloader from "../../../common/Preloader/Preloader";
+import FunctionalButton from "../../../common/Buttons/FunctionalButton";
 
 const Title =  ({isFetching, refreshPage}) => {
 
@@ -12,9 +13,7 @@ const Title =  ({isFetching, refreshPage}) => {
 
     return (
         <div className={styles.titleContent}>
-            <button className={styles.refreshButton} onClick={clickHandler}>
-                Refresh the page
-            </button>
+            <FunctionalButton text={"Refresh the page"} onClick={clickHandler} />
             <div className={styles.title}>
                 Latest News
             </div>

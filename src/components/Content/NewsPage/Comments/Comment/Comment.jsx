@@ -11,7 +11,7 @@ const Comment = (props) => {
         if (!props.openedComments[props.id] && !props.nestedComments[props.id]) {  // if comment is hidden and nested com are not loaded
             props.openComment(props.id);
             setIsFetching(true);
-            await props.getNestedComments(props.kids, props.id);
+            await props.getNestedComments(props.id);
             setIsFetching(false);
         } else if (!props.openedComments[props.id]) {  // if comment is hidden and nested com are loaded
             props.openComment(props.id);
@@ -32,20 +32,29 @@ const Comment = (props) => {
                                                                                   {...c}/>);
     return (
         <div className={styles.commentContainer}>
-            <div onClick={() => haveKids ? showOrHideNestedComments() : ""}>
-                <CommentInfo author={props.by} time={props.time}/>
-                <div className={styles.text} dangerouslySetInnerHTML={{__html: props.text}}>
+            {props.deleted
+                ?
+                <div className={styles.deletedComment}>
+                    Comment has been deleted
+                </div>
+                :
+                <>
+                    <div onClick={() => haveKids ? showOrHideNestedComments() : ""}>
+                        <CommentInfo author={props.by} time={props.time}/>
+                        <div className={styles.text} dangerouslySetInnerHTML={{__html: props.text}}>
 
-                </div>
-            </div>
-            <div>
-                <div className={styles.countOfReply}>
-                    (Count of reply: {haveKids ? props.kids.length : 0})
-                </div>
-                <div className={styles.nestedComments}>
-                    {props.openedComments[props.id] && (isFetching ? <Preloader/> : nestedElements)}
-                </div>
-            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div className={styles.countOfReply}>
+                            (Count of replies: {haveKids ? props.kids.length : 0})
+                        </div>
+                        <div className={styles.nestedComments}>
+                            {props.openedComments[props.id] && (isFetching ? <Preloader/> : nestedElements)}
+                        </div>
+                    </div>
+                </>
+            }
         </div>
     )
 };

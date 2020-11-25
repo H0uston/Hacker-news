@@ -3,7 +3,8 @@
     grid-template-areas:
         "title title"
         "info  button";
-    grid-gap: 10px;
+    grid-row-gap: 10px;
+    grid-column-gap: 30px;
     align-items: center;
     justify-items: center;
 
@@ -13,10 +14,10 @@
 .title {
     grid-area: title;
 
-    margin-top: 10px;
     font-family: "Verdana", sans-serif;
     font-size: 25px;
     font-weight: bold;
+    text-align: center;
 }
 
 .url {
@@ -30,14 +31,25 @@
 
 .info {
     grid-area: info;
-    align-self: start;
     justify-self: start;
 
-    margin-top: 10px;
     font-family: "Verdana", sans-serif;
     font-size: 15px;
 }
 
 .backButton {
     grid-area: button;
+
+    align-self: start;
+    justify-self: end;
+}
+
+.restInfo {
+    margin-top: 5px;
+
+    font-style: italic;
+}
+
+.author {
+    font-weight: bold;
 }

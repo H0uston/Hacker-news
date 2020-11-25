@@ -8,27 +8,30 @@ function Comments(props) {
     let [stateRootCommentElements, setStateRootCommentElements] = useState([]);
     let [isFetching, setIsFetching] = useState(false);
     let [isUpdating, setIsUpdating] = useState(false);
-    let [stateInterval, setStateInterval] = useState(null);
 
     useEffect(() => {
+        let _isMounted = true;
         let loadComments = async () => {
             setIsFetching(true);
-            await props.getListOfComments(props.commentIds);
-            setIsFetching(false);
+            await props.getListOfComments(props.match.params.newsId);
+            if (_isMounted) {  // to avoid memory leak
+                setIsFetching(false);
+            }
         };
 
         if (props.commentIds) {  // Have page comments?
             loadComments();
         }
 
-        setStateInterval(setInterval(async () => {
+        let interval = setInterval(async () => {
             setIsUpdating(true);
             await props.updateComments(props.pageId);
             setIsUpdating(false);
-        }, props.updateCommentsTime));
+        }, props.updateCommentsTime);
 
         return () => {
-            clearInterval(stateInterval);
+            _isMounted = false;
+            clearInterval(interval);
         }
     }, []);
 
@@ -44,11 +47,9 @@ function Comments(props) {
     }, [props.rootComments, props.openedComments, props.nestedComments]);
 
     let forceUpdateComments = async () => {
-        clearInterval(stateInterval);
         setIsUpdating(true);
         await props.updateComments(props.pageId);
         setIsUpdating(false);
-        setStateInterval(setInterval(() => props.updateComments(props.pageId), props.updateCommentsTime));
     };
 
     return (
