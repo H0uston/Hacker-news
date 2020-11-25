@@ -1,5 +1,5 @@
 const fetchData = {
-    baseURL: "http://localhost:8003/api",
+    baseURL: "http://localhost:8000/api",
 };
 
 export default fetchData;

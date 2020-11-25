@@ -10,11 +10,11 @@ function Comments(props) {
     let [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
-        let _isMounted = true;
+        let isMounted = true;
         let loadComments = async () => {
             setIsFetching(true);
             await props.getListOfComments(props.match.params.newsId);
-            if (_isMounted) {  // to avoid memory leak
+            if (isMounted) {  // to avoid memory leak
                 setIsFetching(false);
             }
         };
@@ -24,13 +24,11 @@ function Comments(props) {
         }
 
         let interval = setInterval(async () => {
-            setIsUpdating(true);
-            await props.updateComments(props.pageId);
-            setIsUpdating(false);
+            await forceUpdateComments();
         }, props.updateCommentsTime);
 
         return () => {
-            _isMounted = false;
+            isMounted = false;
             clearInterval(interval);
         }
     }, []);
@@ -47,9 +45,11 @@ function Comments(props) {
     }, [props.rootComments, props.openedComments, props.nestedComments]);
 
     let forceUpdateComments = async () => {
-        setIsUpdating(true);
-        await props.updateComments(props.pageId);
-        setIsUpdating(false);
+        if (!isFetching && !isUpdating) {  // if not already is fetching or updating
+            setIsUpdating(true);
+            await props.updateComments(props.pageId);
+            setIsUpdating(false);
+        }
     };
 
     return (

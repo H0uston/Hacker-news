@@ -6,7 +6,7 @@ import FunctionalButton from "../../../common/Buttons/FunctionalButton";
 const Title =  ({isFetching, refreshPage}) => {
 
     let clickHandler = () => {
-        if (!isFetching) {
+        if (!isFetching) {  // if not already is fetching
             refreshPage();
         }
     };

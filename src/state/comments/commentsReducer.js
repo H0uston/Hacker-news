@@ -13,6 +13,7 @@ let initialState = {
     openedComments: {},
     nestedComments: {},
     updateCommentsTime: 60000,
+    loadedCommentIds: [],
 };
 
 
@@ -21,7 +22,8 @@ const commentsReducer = (state=initialState, action) => {
 
     switch (action.type) {
         case (SET_COMMENTS):
-            stateCopy.rootComments = action.comments; // filter deleted comments
+            stateCopy.rootComments = action.comments;
+            // Setting open status for new comments
             let openedComments = {...stateCopy.openedComments};
             for (let comment of stateCopy.rootComments) {
                 openedComments[comment.id] = false;
@@ -29,6 +31,7 @@ const commentsReducer = (state=initialState, action) => {
             stateCopy.openedComments = openedComments;
             break;
         case (SET_NESTED_COMMENTS):
+            stateCopy.loadedCommentIds = [...stateCopy.loadedCommentIds, action.parentId];
             stateCopy.nestedComments = {...stateCopy.nestedComments, ...action.nestedComments};
 
             stateCopy.openedComments = {...stateCopy.openedComments};
@@ -47,7 +50,7 @@ const commentsReducer = (state=initialState, action) => {
             stateCopy.openedComments[action.commentId] = false;
             break;
         case (SET_UPDATED_COMMENTS):
-            let newComments = action.comments; // filter deleted comments
+            let newComments = action.comments;
             // detecting new comments
             let newIds = newComments.map(c => c.id);
             let oldIds = stateCopy.rootComments.map(c => c.id);
@@ -71,6 +74,7 @@ const commentsReducer = (state=initialState, action) => {
             }
             break;
         case (SET_UPDATED_NESTED_COMMENTS):
+            stateCopy.loadedCommentIds = [...stateCopy.loadedCommentIds, action.parentId];
             // copy and getting ids in one for
             let oldNestedIds = [];
             let oldNestedComments = {};
@@ -124,24 +128,24 @@ const getCommentItem = async (commentId) => {
     }
 };
 
-export const getListOfComments = (newsId) => async (dispatch) => {
-    let response = await commentsAPI.fetchRootComments(newsId);
+const getItems = async (parentId, callback) => {
+    let response = await callback(parentId);
     if (response.status === 200) {
-        let comments = await response.json();
-        dispatch(setComments(comments));
+
+        return await response.json();
     } else {
         throw Error(response.statusText);
     }
 };
 
+export const getListOfComments = (newsId) => async (dispatch) => {
+    let comments = await getItems(newsId, commentsAPI.fetchRootComments);
+    dispatch(setComments(comments));
+};
+
 export const getNestedComments = (commentId) => async (dispatch) => {
-    let response = await commentsAPI.fetchNestedComments(commentId);
-    if (response.status === 200) {
-        let comments = await response.json();
-        dispatch(setNestedComments(comments, commentId));
-    } else {
-        throw Error(response.statusText);
-    }
+    let comments = await getItems(commentId, commentsAPI.fetchNestedComments);
+    dispatch(setNestedComments(comments, commentId));
 };
 
 export const openComment = (commentId) => (dispatch) => {
@@ -153,23 +157,16 @@ export const closeComment = (commentId) => (dispatch) => {
 };
 
 export const updateComments = (newsId) => async (dispatch, getState) => {
-    let currentNestedComments = getState().commentsInfo.nestedComments;
+    let loadedCommentIds = getState().commentsInfo.loadedCommentIds;
 
-    // Get root comment ids of news
-    let response = await commentsAPI.fetchRootComments(newsId);
-    if (response.status === 200) {
-        let comments = await response.json();
-        dispatch(setUpdatedComments(comments));
-        // Get nested comments
-        for (let comment of comments) { // TODO
-            if (currentNestedComments.hasOwnProperty(comment.id)) {  // if this root comment has been opened
-                let response = await commentsAPI.fetchNestedComments(comment.id);  // we have to update his nested comments
-                if (response.status === 200) {
-                    dispatch(setUpdatedNestedComments(await response.json(), comment.id));
-                }
-            }
-        }
+    let rootComments = await getItems(newsId, commentsAPI.fetchRootComments);
+    dispatch(setUpdatedComments(rootComments));
+    // Get nested comments
+    for (let loadedId of loadedCommentIds) {
+        let nestedComments = await getItems(loadedId, commentsAPI.fetchNestedComments);
+        dispatch(setUpdatedNestedComments(nestedComments, loadedId));
     }
+
 };
 
 export default commentsReducer;
