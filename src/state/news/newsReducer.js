@@ -19,17 +19,14 @@ const newsReducer = (state=initialState, action) => {
     return stateCopy;
 };
 
-export const getNewsItem = async (newsId) => { // TODO
-    let response = await newsAPI.fetchNewsItemData(newsId);
-    if (response.status === 200) {
-        return response.json();
-    }
-    throw Error("Error"); // TODO
-};
-
 export const getNewsInfo = (newsId) => async (dispatch) => {
-    let response = await getNewsItem(newsId);
-    dispatch(setNewsInfo(response));
+    let response = await newsAPI.fetchNews(newsId);
+    if (response.status === 200) {
+        let newsInfo = await response.json();
+        dispatch(setNewsInfo(newsInfo));
+    } else {
+        throw Error(response.statusText);
+    }
 };
 
 export default newsReducer;

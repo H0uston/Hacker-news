@@ -8,27 +8,28 @@ function Comments(props) {
     let [stateRootCommentElements, setStateRootCommentElements] = useState([]);
     let [isFetching, setIsFetching] = useState(false);
     let [isUpdating, setIsUpdating] = useState(false);
-    let [stateInterval, setStateInterval] = useState(null);
 
     useEffect(() => {
+        let isMounted = true;
         let loadComments = async () => {
             setIsFetching(true);
-            await props.getListOfComments(props.commentIds);
-            setIsFetching(false);
+            await props.getListOfComments(props.match.params.newsId);
+            if (isMounted) {  // to avoid memory leak
+                setIsFetching(false);
+            }
         };
 
         if (props.commentIds) {  // Have page comments?
             loadComments();
         }
 
-        setStateInterval(setInterval(async () => {
-            setIsUpdating(true);
-            await props.updateComments(props.pageId);
-            setIsUpdating(false);
-        }, props.updateCommentsTime));
+        let interval = setInterval(async () => {
+            await forceUpdateComments();
+        }, props.updateCommentsTime);
 
         return () => {
-            clearInterval(stateInterval);
+            isMounted = false;
+            clearInterval(interval);
         }
     }, []);
 
@@ -44,11 +45,11 @@ function Comments(props) {
     }, [props.rootComments, props.openedComments, props.nestedComments]);
 
     let forceUpdateComments = async () => {
-        clearInterval(stateInterval);
-        setIsUpdating(true);
-        await props.updateComments(props.pageId);
-        setIsUpdating(false);
-        setStateInterval(setInterval(() => props.updateComments(props.pageId), props.updateCommentsTime));
+        if (!isFetching && !isUpdating) {  // if not already is fetching or updating
+            setIsUpdating(true);
+            await props.updateComments(props.pageId);
+            setIsUpdating(false);
+        }
     };
 
     return (

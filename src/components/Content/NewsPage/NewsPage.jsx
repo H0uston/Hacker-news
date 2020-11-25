@@ -10,6 +10,7 @@ const NewsPage = (props) => {
     let [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
+        let _isMounted = true;
         let loadData = async () => {
             setIsFetching(true);
             let queryId = props.match.params.newsId;  //getting pageId from url
@@ -18,10 +19,16 @@ const NewsPage = (props) => {
             }
             setNewsId(queryId);
             await props.getNewsInfo(queryId);
-            setIsFetching(false);
+            if (_isMounted) {
+                setIsFetching(false);
+            }
         };
         loadData();
-    }, []);
+
+        return () => {
+            _isMounted = false;
+        }
+    }, [props.getNewsInfo, props.match.params.newId]);
 
     return (
         <article className={styles.NewsPage}>

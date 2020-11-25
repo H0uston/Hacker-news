@@ -6,7 +6,6 @@ import {
     setComments, setNestedComments, setUpdatedComments, setUpdatedNestedComments,
 } from "./commentsAction";
 import {commentsAPI} from "../../API/commentsAPI";
-import {getNewsItem} from "../news/newsReducer";
 
 
 let initialState = {
@@ -14,6 +13,7 @@ let initialState = {
     openedComments: {},
     nestedComments: {},
     updateCommentsTime: 60000,
+    loadedCommentIds: [],
 };
 
 
@@ -22,7 +22,8 @@ const commentsReducer = (state=initialState, action) => {
 
     switch (action.type) {
         case (SET_COMMENTS):
-            stateCopy.rootComments = action.comments.filter(c => !c.deleted); // filter deleted comments
+            stateCopy.rootComments = action.comments;
+            // Setting open status for new comments
             let openedComments = {...stateCopy.openedComments};
             for (let comment of stateCopy.rootComments) {
                 openedComments[comment.id] = false;
@@ -30,24 +31,30 @@ const commentsReducer = (state=initialState, action) => {
             stateCopy.openedComments = openedComments;
             break;
         case (SET_NESTED_COMMENTS):
-            stateCopy.nestedComments = {...stateCopy.nestedComments};
-            stateCopy.nestedComments[action.parentId] = action.nestedComments.filter(c => !c.deleted); // filter deleted comments
+            stateCopy.loadedCommentIds = [...stateCopy.loadedCommentIds, action.parentId];
+            stateCopy.nestedComments = {...stateCopy.nestedComments, ...action.nestedComments};
 
             stateCopy.openedComments = {...stateCopy.openedComments};
-            for (let comment of action.nestedComments) {
-                stateCopy.openedComments[comment.id] = false;
+            for (let commentKey of Object.keys(action.nestedComments)) {
+                for (let comment of action.nestedComments[commentKey]) {
+                    stateCopy.openedComments[comment.id] = false;
+                }
             }
             break;
         case (SET_COMMENT_IS_OPENED):
             stateCopy.openedComments = {...stateCopy.openedComments};
-            stateCopy.openedComments[action.commentId] = true;
+            if (stateCopy.openedComments.hasOwnProperty(action.commentId)) {
+                stateCopy.openedComments[action.commentId] = true;
+            }
             break;
         case (SET_COMMENT_IS_CLOSED):
             stateCopy.openedComments = {...stateCopy.openedComments};
-            stateCopy.openedComments[action.commentId] = false;
+            if (stateCopy.openedComments.hasOwnProperty(action.commentId)) {
+                stateCopy.openedComments[action.commentId] = false;
+            }
             break;
         case (SET_UPDATED_COMMENTS):
-            let newComments = action.comments.filter(c => !c.deleted); // filter deleted comments
+            let newComments = action.comments;
             // detecting new comments
             let newIds = newComments.map(c => c.id);
             let oldIds = stateCopy.rootComments.map(c => c.id);
@@ -82,16 +89,13 @@ const commentsReducer = (state=initialState, action) => {
             }
             stateCopy.nestedComments = oldNestedComments;
 
-            // filter deleted items and getting ids in one for
             let newNestedIds = [];
-            let newNestedComments = [];
-            for (let nestedComment of action.nestedComments) {
-                if (!nestedComment.deleted) {
-                    newNestedIds.push(nestedComment.id);
-                    newNestedComments.push(nestedComment);
+            for (let nestedCommentKey of Object.keys(action.nestedComments)) {
+                for (let comment of action.nestedComments[nestedCommentKey]) {
+                    newNestedIds.push(comment.id);
                 }
             }
-            stateCopy.nestedComments[action.parentId] = newNestedComments;
+            stateCopy.nestedComments = {...stateCopy.nestedComments, ...action.nestedComments};
 
             // detecting new ids
             for (let i = 0; i < newNestedIds.length; i++) {
@@ -104,6 +108,7 @@ const commentsReducer = (state=initialState, action) => {
                     }
                 }
             }
+
             if (newNestedIds.length !== 0) {
                 stateCopy.openedComments = {...stateCopy.openedComments};
                 for (let newNestedId of newNestedIds) {
@@ -117,30 +122,33 @@ const commentsReducer = (state=initialState, action) => {
 };
 
 
-const getCommentItem = async (commentId) => { // TODO is repeat?
-    let response = await commentsAPI.fetchCommentData(commentId);
-    return await response.json();
-};
-
-const getCommentsPromises = (commentIds) => {
-    let commentsPromises = [];
-    let commentsCount = commentIds.length;
-    for (let i = 0; i < commentsCount; i++) {
-        commentsPromises.push(getCommentItem(commentIds[i]));
+const getCommentItem = async (commentId) => {
+    let response = await commentsAPI.fetchCommentItem(commentId);
+    if (response.status === 200) {
+        return await response.json();
+    } else {
+        throw Error(response.statusText);
     }
-    return commentsPromises;
 };
 
-export const getListOfComments = (commentIds) => async (dispatch) => {
-    let commentPromises = await getCommentsPromises(commentIds);
-    let comments = await Promise.all(commentPromises);
+const getItems = async (parentId, callback) => {
+    let response = await callback(parentId);
+    if (response.status === 200) {
+
+        return await response.json();
+    } else {
+        throw Error(response.statusText);
+    }
+};
+
+export const getListOfComments = (newsId) => async (dispatch) => {
+    let comments = await getItems(newsId, commentsAPI.fetchRootComments);
     dispatch(setComments(comments));
 };
 
-export const getNestedComments = (nestedCommentIds, parentId) => async (dispatch) => {
-    let commentPromises = await getCommentsPromises(nestedCommentIds);
-    let comments = await Promise.all(commentPromises);
-    dispatch(setNestedComments(comments, parentId));
+export const getNestedComments = (commentId) => async (dispatch) => {
+    let comments = await getItems(commentId, commentsAPI.fetchNestedComments);
+    dispatch(setNestedComments(comments, commentId));
 };
 
 export const openComment = (commentId) => (dispatch) => {
@@ -151,24 +159,17 @@ export const closeComment = (commentId) => (dispatch) => {
     dispatch(setCommentIsClosed(commentId));
 };
 
-export const updateComments = (pageId) => async (dispatch, getState) => {
-    let currentNestedComments = getState().commentsInfo.nestedComments;
+export const updateComments = (newsId) => async (dispatch, getState) => {
+    let loadedCommentIds = getState().commentsInfo.loadedCommentIds;
 
-    // Get root comment ids of news
-    let response = await getNewsItem(pageId);
-    // Get root comments
-    if (response && response.kids) {
-        let commentPromises = await getCommentsPromises(response.kids);
-        let newRootComments = await Promise.all(commentPromises);
-        dispatch(setUpdatedComments(newRootComments));
-        // Get nested comments
-        for (let parentId of Object.keys(currentNestedComments)) {
-            let comment = await getCommentItem(parentId); // check if appears new nested comments
-            let newNestedCommentsPromise = await getCommentsPromises(comment.kids);
-            let newNestedComments = await Promise.all(newNestedCommentsPromise);
-            dispatch(setUpdatedNestedComments(newNestedComments, parentId));
-        }
+    let rootComments = await getItems(newsId, commentsAPI.fetchRootComments);
+    dispatch(setUpdatedComments(rootComments));
+    // Get nested comments
+    for (let loadedId of loadedCommentIds) {
+        let nestedComments = await getItems(loadedId, commentsAPI.fetchNestedComments);
+        dispatch(setUpdatedNestedComments(nestedComments, loadedId));
     }
+
 };
 
 export default commentsReducer;
