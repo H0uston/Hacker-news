@@ -1,0 +1,39 @@
+.newsItem {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 3px;
+
+    margin: 10px 25px;
+    padding: 5px 10px;
+
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    text-decoration: none;
+    font-family: "Verdana", sans-serif;
+    box-shadow: 0 0 5px #cccccc;
+
+    cursor: pointer;
+}
+
+.title {
+    grid-row: 1;
+
+    font-size: 20px;
+    color: black;
+    text-decoration: underline;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.restData {
+    grid-row: 2;
+
+    color: black;
+    font-style: italic;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

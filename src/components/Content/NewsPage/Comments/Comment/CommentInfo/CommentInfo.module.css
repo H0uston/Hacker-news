@@ -1,0 +1,20 @@
+.commentInfoContent {
+    display: flex;
+    flex-direction: row;
+}
+
+.author {
+    font-weight: bold;
+}
+
+.text {
+    font-size: 10px;
+}
+
+.date {
+    font-style: italic;
+    padding-left: 10px;
+}
+
+
+

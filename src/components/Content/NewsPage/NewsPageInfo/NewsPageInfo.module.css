@@ -1,0 +1,55 @@
+.newsPageInfoContent {
+    display: grid;
+    grid-template-areas:
+        "title title"
+        "info  button";
+    grid-row-gap: 10px;
+    grid-column-gap: 30px;
+    align-items: center;
+    justify-items: center;
+
+    padding-top: 15px;
+}
+
+.title {
+    grid-area: title;
+
+    font-family: "Verdana", sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.url {
+    text-decoration: none;
+    color: black;
+}
+
+.url:hover {
+    text-decoration: underline;
+}
+
+.info {
+    grid-area: info;
+    justify-self: start;
+
+    font-family: "Verdana", sans-serif;
+    font-size: 15px;
+}
+
+.backButton {
+    grid-area: button;
+
+    align-self: start;
+    justify-self: end;
+}
+
+.restInfo {
+    margin-top: 5px;
+
+    font-style: italic;
+}
+
+.author {
+    font-weight: bold;
+}

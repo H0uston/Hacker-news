@@ -1,0 +1,11 @@
+.commentsContent {
+    font-family: "Verdana", sans-serif;
+    font-size: 15px;
+}
+
+.comments {
+    grid-area: comments;
+
+    display: flex;
+    flex-direction: column;
+}

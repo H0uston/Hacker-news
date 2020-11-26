@@ -1,0 +1,40 @@
+.headerComponent {
+    flex: 1;
+
+    max-height: 60px;
+
+    background-color: #1D1D1D;
+    box-shadow: 0 0 16px #cccccc;
+}
+
+.leftContent {
+    display: inline-block;
+}
+
+.logo {
+    height: 30px;
+    width: 30px;
+
+    padding: 1px;
+
+    border: 1px #EEFBFB solid;
+}
+
+.title {
+    padding: 10px;
+
+    font-size: 30px;
+    color: #EEFBFB;
+    font-family: "Verdana", sans-serif;
+}
+
+.logoAndTitle {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+
+    margin-left: 10px;
+
+    text-decoration: none;
+}

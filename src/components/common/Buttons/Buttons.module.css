@@ -1,0 +1,31 @@
+.button {
+    width: 150px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+    font-family: "Verdana", sans-serif;
+    border: 2px solid #1D1D1D;
+    border-radius: 25px;
+    text-decoration: none;
+    color: black;
+
+    cursor: pointer;
+
+    outline: none;
+
+    background-color: #F0F0F0;
+    padding: 0;
+    box-sizing: content-box;
+}
+
+.button:hover {
+    background-color: #E0E0E0;
+}
+
+.button:active {
+    background-color: #A0A0A0;
+}
