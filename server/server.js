@@ -22,3 +22,5 @@ app.use(function (req, res) {
 });
 
 app.listen(config.PORT);
+
+console.log(`App started at localhost:${config.PORT}`);

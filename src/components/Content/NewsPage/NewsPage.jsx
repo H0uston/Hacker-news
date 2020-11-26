@@ -28,7 +28,7 @@ const NewsPage = (props) => {
         return () => {
             _isMounted = false;
         }
-    }, [props.getNewsInfo, props.match.params.newId]);
+    }, []);
 
     return (
         <article className={styles.NewsPage}>

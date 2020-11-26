@@ -15,7 +15,7 @@ const newsListReducer = (state=initialState, action) => {
 
     switch (action.type) {
         case (SET_LAST_NEWS_ITEMS):
-            stateCopy.lastNews.lastNewsItems = action.newsItems;
+            stateCopy.lastNews.lastNewsItems = action.newsItems.sort((a, b) => b - a);
             break;
         default:
             break;
