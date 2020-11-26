@@ -17,6 +17,8 @@ const newsListReducer = (state=initialState, action) => {
         case (SET_LAST_NEWS_ITEMS):
             stateCopy.lastNews.lastNewsItems = action.newsItems;
             break;
+        default:
+            break;
     }
 
     return stateCopy;

@@ -116,19 +116,11 @@ const commentsReducer = (state=initialState, action) => {
                 }
             }
             break;
+        default:
+            break;
     }
 
     return stateCopy;
-};
-
-
-const getCommentItem = async (commentId) => {
-    let response = await commentsAPI.fetchCommentItem(commentId);
-    if (response.status === 200) {
-        return await response.json();
-    } else {
-        throw Error(response.statusText);
-    }
 };
 
 const getItems = async (parentId, callback) => {
