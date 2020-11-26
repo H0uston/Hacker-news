@@ -1,1 +1,1 @@
-exports.PORT = 8000;
+exports.PORT = 3000;
