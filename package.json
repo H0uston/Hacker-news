@@ -19,7 +19,8 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts build && cp -r build server && rm -R build && cd server && node server.js",
+    "start": "npm install; react-scripts build && cp -r build server && rm -R build && cd server && node server.js",
+    "start-windows": "npm install && react-scripts build && xcopy /E build server\\build\\ && cd server && node server.js",
     "develop": "react-scripts start",
     "backend-start": "node server.js",
     "build": "react-scripts build",
