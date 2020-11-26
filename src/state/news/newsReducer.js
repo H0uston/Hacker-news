@@ -14,6 +14,8 @@ const newsReducer = (state=initialState, action) => {
         case (SET_NEWS_INFO):
             stateCopy.pageInfo = action.newsInfo;
             break;
+        default:
+            break;
     }
 
     return stateCopy;
