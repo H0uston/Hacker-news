@@ -17,8 +17,6 @@ const Comment = (props) => {
             props.openComment(props.id);
         } else if (props.openedComments[props.id]) {  // if comment is shown
             props.closeComment(props.id);
-        } else {
-            debugger;
         }
     };
 
