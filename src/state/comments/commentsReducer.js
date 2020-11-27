@@ -16,6 +16,22 @@ let initialState = {
     loadedCommentIds: [],
 };
 
+const detectNewId = (newIds, oldIds) => {
+    let copyNewIds = [...newIds];
+    let copyOldIds = [...oldIds];
+    for (let i = 0; i < copyNewIds.length; i++) {
+        for (let j = 0; j < copyOldIds.length; j++) {
+            if (copyNewIds[i] === copyOldIds[j]) {
+                copyNewIds.splice(i,1);
+                copyOldIds.splice(j, 1);
+                i--;
+                j--;
+            }
+        }
+    }
+
+    return copyNewIds;
+};
 
 const commentsReducer = (state=initialState, action) => {
     let stateCopy = {...state};
@@ -58,16 +74,8 @@ const commentsReducer = (state=initialState, action) => {
             // detecting new comments
             let newIds = newComments.map(c => c.id);
             let oldIds = stateCopy.rootComments.map(c => c.id);
-            for (let i = 0; i < newIds.length; i++) {
-                for (let j = 0; j < oldIds.length; j++) {
-                    if (newIds[i] === oldIds[j]) {
-                        newIds.splice(i,1);
-                        oldIds.splice(j, 1);
-                        i--;
-                        j--;
-                    }
-                }
-            }
+
+            newIds = detectNewId(newIds, oldIds);
 
             stateCopy.rootComments = newComments;
             if (newIds.length !== 0) { // if comments are updated
@@ -96,18 +104,8 @@ const commentsReducer = (state=initialState, action) => {
                 }
             }
             stateCopy.nestedComments = {...stateCopy.nestedComments, ...action.nestedComments};
-
-            // detecting new ids
-            for (let i = 0; i < newNestedIds.length; i++) {
-                for (let j = 0; j < oldNestedIds.length; j++) {
-                    if (newNestedIds[i] === oldNestedIds[j]) {
-                        newNestedIds.splice(i,1);
-                        oldNestedIds.splice(j, 1);
-                        i--;
-                        j--;
-                    }
-                }
-            }
+            
+            newNestedIds = detectNewId(newNestedIds, oldNestedIds);
 
             if (newNestedIds.length !== 0) {
                 stateCopy.openedComments = {...stateCopy.openedComments};
